@@ -13,7 +13,7 @@ However, if you are using Strapi v5, you should use the document service middlew
 Lifecycle hooks are still useful for the following use cases:
 
 - When you want to do something using the "users-permissions" plugin,
-- When you want to do something using the "upload package" package,
+- When you want to do something using the "upload package",
 
 In this blog post, we will examine an example of how to use lifecycle hooks to create a **user profile** when a **user** is created.
 
