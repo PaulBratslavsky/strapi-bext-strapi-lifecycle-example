@@ -1,21 +1,21 @@
 # When to use Strapi Lifecycle Hooks
 
-After the update to Strapi v5, the lifecycle hooks are no longer the recommended approach for most use cases. Instead we recommend that you use Strapi's document service middleware. 
+After the update to Strapi v5, lifecycle hooks are no longer the recommended approach for most use cases. Instead, we recommend using Strapi's document service middleware. 
 
 You can read more about it in the [Strapi Document Service Middleware](https://strapi.io/blog/what-are-document-service-middleware-and-what-happened-to-lifecycle-hooks-1).
 
 If you are using Strapi v4, then lifecycle hooks are still the recommended approach. You can read more about it in the [Strapi Lifecycle Hooks v4](https://docs-v4.strapi.io/dev-docs/backend-customization/models#available-lifecycle-events).
 
-However, if you are using Strapi v5, then you should use the document service middleware.
+However, if you are using Strapi v5, you should use the document service middleware.
 
-## So when should you use lifecycle hooks?
+## So, when should you use lifecycle hooks?
 
 Lifecycle hooks are still useful for the following use cases:
 
-- When you want to do something when using "users-permissions" plugin.
-- When you want to do something when using "media-library" package.
+- When you want to do something using the "users-permissions" plugin,
+- When you want to do something using the "upload package" package,
 
-In this blog post we will look at an example of how to use lifecycle hooks to create a **user profile** when a **user** is created.
+In this blog post, we will examine an example of how to use lifecycle hooks to create a **user profile** when a **user** is created.
 
 We will have two hooks:
 
@@ -56,27 +56,30 @@ Navigate to the Strapi project and create your first **Admin User**.
 
 ![Create Admin User](img/001-lifecycle-strapi-admin.png)
 
-Now that our project is running, let's take a look at the quick demo, and then we will dive into the code.
+
+
+Now that our project runs, let's review the quick demo and dive into the code.
 
 ![Lifecycle Hooks Demo](img/002-lifecycle-strapi-demo.gif)
 
-You may notice that we a redirected to the **Dashboard** page after we login and get `not found` error. That is because we did not create it yet.
+You may notice that we are redirected to the **Dashboard** page after we log in and get a `not found` error. That is because we have not created it yet.
 
 The goal is to focus on Strapi lifecycle hooks and how to use them.
 
-You notice on submit, we create a new user, but we also create a user profile for that user with additional information `fullName` and `bio`.
+You notice that when you submit, we create a new user and a user profile for that user with additional information, such as `fullName` and `bio`.
 
 ## Why Would We Want to Do This?
 
-This approach helps separate a user's profile information from their sensitive data, enhancing security and privacy.
+This approach helps separate a user's profile information from sensitive data, enhancing security and privacy.
 
-Additionally, you won’t need to expose the user endpoint to the client.
+You won't need to expose the user endpoint to the client.
 
-Instead, by using the `me` endpoint, you can retrieve just the user's ID, which can then be used to fetch the user's profile information.
+Instead, you can use the `me` endpoint to retrieve just the user's ID, which can then be used to fetch the user's profile information.
 
-Alternatively, you can create a custom endpoint to fetch the user's profile information instead, and completely lock down the user endpoint.
+Alternatively, you can create a custom endpoint to fetch the user's profile information instead and completely lock down the user endpoint.
 
 Let's jump into the code and see how we can achieve this.
+
 
 ## Registering Lifecycle Hooks in Bootstrap Method
 
@@ -84,9 +87,9 @@ We will register the lifecycle hooks in the `bootstrap` function in the `src/ind
 
 You can learn more about the bootstrap method in the [Strapi Bootstrap Method](https://docs-v4.strapi.io/dev-docs/backend-customization/models#available-lifecycle-events).
 
-The `bootstrap()` function is run before the back-end server starts but after the Strapi application has setup, so you have access to anything from the strapi object.
+The `bootstrap()` function is run before the back-end server starts but after the Strapi application has been setup, so you can access anything from the strapi object.
 
-Taking a look at the code found in the `src/index.ts` here is where we programmatically register the lifecycle hooks.
+Take a look at the code in `src/index.ts`, where we programmatically register the lifecycle hooks.
 
 ```ts
 bootstrap({ strapi }: { strapi: Core.Strapi }) {
@@ -121,17 +124,17 @@ bootstrap({ strapi }: { strapi: Core.Strapi }) {
   },
 ```
 
-This function registers a lifecycle subscriber in Strapi's database system to handle specific actions related to user creation and deletion.
+This function registers a lifecycle subscriber in Strapi's database system to handle specific user creation and deletion actions.
 
 **After a user is created (afterCreate):**
 
-- It checks if the fullName and bio fields are provided in the request.
+- It checks if the `fullName` and `bio` fields are provided in the request.
 - If missing, it assigns a generated username and a default bio.
 - It then creates a corresponding user profile using createUserProfile.
 
 **Before a user is deleted (beforeDelete):**
 
-- It retrieves the user ID about to be deleted.
+- It retrieves the user ID that is about to be deleted.
 - Calls deleteUserProfile to remove the associated profile.
 
 This setup ensures that every user has a profile upon creation and that their profile is deleted when the user is removed.
@@ -143,7 +146,7 @@ We also have some helper functions to create and delete the user profile.
 - `deleteUserProfile`: Deletes a user profile for a user.
 - `generateUsername`: Generates a random username for a user if the fullName is not provided.
 
-The full completed code look like the following:
+The full completed code looks like the following:
 
 ```ts   
 // TODO: This only applies to the users-permissions plugin.
@@ -284,9 +287,9 @@ export default {
 
 ```
 
-The last piece of the puzzle is to make suer that we are able to pass additional fields on the user creation.
+The last piece of the puzzle is to ensure that we can pass additional fields on the user creation.
 
-To allow extra fields like `fullName` and `bio` we need to update the `config/plugins.ts` file with the following:
+To allow extra fields like `fullName` and `bio`, we need to update the `config/plugins.ts` file with the following:
 
 ```ts
 export default () => ({
@@ -308,30 +311,16 @@ In this blog post we learned how to use Strapi lifecycle hooks to create a user 
 
 We also learned how to use the `bootstrap` method to register the lifecycle hooks.
 
-We also learned how to use the `config/plugins.ts` file to allow extra fields to be passed on the user creation.
+We also learned how to use the `config/plugins.ts` file to allow extra fields to be passed on to the user creation.
 
 I hope you enjoyed this blog post. If you have any questions, please leave a comment below.
 
+## Github Project Repo
+You can find the complete code for this project in the following [Github repo](https://github.com/PaulBratslavsky/strapi-next-strapi-lifecycle-example).
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## Strapi Open Office Hours
+If you have any questions about Strapi 5 or just would like to stop by and say hi, you can join us at **Strapi's Discord Open Office Hours** Monday through Friday at 12:30 pm - 1:30 pm CST: [Strapi Discord Open Office Hours](https://discord.com/invite/strapi)
 
 
 
